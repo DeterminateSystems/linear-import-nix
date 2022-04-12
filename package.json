@@ -1,0 +1,138 @@
+{
+  "name": "linear",
+  "private": true,
+  "version": "0",
+  "author": "Linear Orbit, Inc",
+  "license": "MIT",
+  "engines": {
+    "node": ">=12.x",
+    "yarn": "1.x"
+  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "build:import": "lerna run build:import",
+    "build:sdk": "lerna run build:sdk",
+    "build:types": "npx tsc --project tsconfig.check.json",
+    "build": "run-s generate build:sdk generate:test build:import build:types docs",
+    "dev": "NODE_ENV=development yarn build",
+    "docs": "npx md-magic --path './packages/**/README.md' --config ./docs/markdown-magic.config.js",
+    "generate:clean": "lerna run generate:clean",
+    "generate:doc": "lerna run build:codegen-doc && lerna run generate:doc",
+    "generate:sdk": "lerna run build:codegen-sdk && lerna run generate:sdk",
+    "generate:test": "lerna run build:codegen-test && lerna run generate:test",
+    "generate": "run-s generate:clean generate:doc generate:sdk",
+    "lint": "npx eslint --max-warnings 0 --ext .ts,.tsx **/src/*",
+    "mock": "npx graphql-faker packages/sdk/src/schema.graphql",
+    "schema": "yarn update:schema",
+    "test:e2e": "E2E=true yarn test _generated.test",
+    "test:update": "yarn test -u",
+    "test:watch": "yarn test --watch",
+    "test": "npx jest -w 1",
+    "update:dependencies": "yarn upgrade && lerna run generate:changeset:dependencies",
+    "update:schema": "lerna run generate:schema && lerna run generate:changeset:schema"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.14.1",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@graphql-codegen/cli": "^1.19.1",
+    "@octokit/core": "^3.2.1",
+    "@rollup/plugin-typescript": "^8.1.1",
+    "@types/express": "^4.17.8",
+    "@types/inquirer": "^7.3.1",
+    "@types/jest": "^26.0.20",
+    "@types/lodash": "^4.14.165",
+    "@types/node-fetch": "^2.5.7",
+    "@types/ws": "^7.4.1",
+    "@typescript-eslint/eslint-plugin": "^4.8.0",
+    "@typescript-eslint/parser": "^4.8.0",
+    "auto-bind": "^4.0.0",
+    "body-parser": "^1.19.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^30.7.8",
+    "eslint-plugin-no-null": "^1.0.2",
+    "express": "^4.17.1",
+    "get-port": "^5.1.1",
+    "graphql": "^15.4.0",
+    "graphql-faker": "^2.0.0-rc.23",
+    "husky": "^4.3.8",
+    "jest": "^26.6.3",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.5.1",
+    "markdown-magic": "^1.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.4.4",
+    "tslib": "^2.1.0",
+    "typescript": "^4.0.5",
+    "@linear/sdk": "^1.21.0",
+    "chalk": "4.1.0",
+    "csvtojson": "2.0.10",
+    "date-fns": "^2.19.0",
+    "inquirer": "7.3.3",
+    "inquirer-file-path": "1.0.1",
+    "jira2md": "2.0.4",
+    "lodash": "4.17.20",
+    "node-fetch": "2.6.1",
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "@rollup/plugin-typescript": "^8.1.1",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^2.38.3",
+    "rollup-plugin-gzip": "^2.5.0",
+    "rollup-plugin-size-snapshot": "^0.12.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "ts-node": "^9.1.1"
+  },
+  "resolutions": {
+    "graphql": "^15.4.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,json,css,yaml}": [
+      "npx prettier --write **/*.{js,ts,tsx,json,css,yaml}"
+    ],
+    "*.{js,ts,tsx}": [
+      "npx eslint --max-warnings 0 --fix -c .eslintrc.precommit.json"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "npx commitlint -E  HUSKY_GIT_PARAMS",
+      "pre-commit": "npx lint-staged"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ],
+    "testMatch": [
+      "**/*.test.ts?(x)"
+    ],
+    "transform": {
+      "^.*\\.tsx?$": "ts-jest"
+    },
+    "testTimeout": 20000,
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.json"
+      }
+    }
+  }
+}
